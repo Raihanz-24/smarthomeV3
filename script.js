@@ -72,6 +72,7 @@ function toggleNightMode() {
 
 // Kirim pesan ke bot Telegram
 function sendToTelegram(message) {
+    console.log("Mengirim pesan ke Telegram:", message); // Debugging
     const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`;
     const data = {
         chat_id: CHAT_ID,
