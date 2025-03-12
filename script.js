@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
 // Token dan Chat ID bot Telegram
 const BOT_TOKEN = "7938826396:AAGqbyvm4a9KdebQkCOGXXRrqHwDc2zBshk";
 const CHAT_ID = "5477649606";
-const ESP32_API_URL = "http://192.168.1.100/control"; // Ganti dengan IP ESP32
+const ESP32_API_URL = "http://192.168.1.7/control"; // Ganti dengan IP ESP32
 
 function updateDateTime() {
     const now = new Date();
