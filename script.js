@@ -32,8 +32,8 @@ function toggleRelay(button, deviceType) {
     const device = button.textContent.trim();
     const status = button.classList.contains("bg-green-600") ? "ON" : "OFF";
 
-    sendToTelegram(`Perintah: ${device} ${status}`);
-    sendToESP32(device, status, deviceType);
+    sendToTelegram(`${device} ${status}`);
+    // sendToESP32(device, status, deviceType);
 }
 
 function emergencyStop() {
@@ -43,7 +43,7 @@ function emergencyStop() {
     });
 
     sendToTelegram("⚠️ Semua perangkat telah dimatikan!");
-    sendToESP32("ALL", "OFF", "emergency");
+    // sendToESP32("ALL", "OFF", "emergency");
     alert("⚠️ Semua perangkat telah dimatikan!");
 }
 
@@ -91,13 +91,13 @@ function sendToTelegram(message) {
 }
 
 // Kirim perintah ke ESP32
-function sendToESP32(device, status, deviceType) {
-    const url = `${ESP32_API_URL}?device=${encodeURIComponent(device)}&status=${status}&type=${deviceType}`;
+// function sendToESP32(device, status, deviceType) {
+//     const url = `${ESP32_API_URL}?device=${encodeURIComponent(device)}&status=${status}&type=${deviceType}`;
 
-    fetch(url, {
-        method: "GET",
-    })
-    .then(response => response.json())
-    .then(data => console.log("ESP32 Response:", data))
-    .catch(error => console.error("Error mengirim ke ESP32:", error));
-}
+//     fetch(url, {
+//         method: "GET",
+//     })
+//     .then(response => response.json())
+//     .then(data => console.log("ESP32 Response:", data))
+//     .catch(error => console.error("Error mengirim ke ESP32:", error));
+// }
