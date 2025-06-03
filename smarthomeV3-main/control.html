@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Home Controller</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .floating-button {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 50;
+        }
+
+        .active-tab {
+            @apply text-blue-600 font-bold;
+        }
+
+        .nav-tab {
+            transition: transform 0.2s ease;
+        }
+
+        .nav-tab:active {
+            transform: scale(0.9);
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-100 p-4 flex flex-col items-center transition-colors duration-300">
+
+    <button class="floating-button px-4 py-2 bg-blue-600 text-white rounded-lg" onclick="toggleNightMode()">🌙 Night
+        Mode</button>
+
+    <h1 class="text-3xl font-bold mb-2 mt-4">Smart Home Controller</h1>
+    <p class="text-lg mb-4">Created by Reyhan</p>
+
+    <!-- Informasi -->
+    <div class="flex gap-4 mb-4 flex-wrap justify-center">
+        <div class="flex items-center gap-2 text-lg font-semibold">
+            ⏰ <span id="time"></span>
+        </div>
+        <div class="flex items-center gap-2 text-lg font-semibold">
+            📅 <span id="date"></span>
+        </div>
+        <div class="flex items-center gap-2 text-lg font-semibold">
+            🔌 Status: <span class="text-green-500">Online</span>
+        </div>
+    </div>
+
+    <!-- Konten -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+
+        <!-- Lampu -->
+        <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
+            <h2 class="text-xl font-semibold mb-4">Lampu</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
+                    1</button>
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
+                    2</button>
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
+                    3</button>
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
+                    4</button>
+            </div>
+        </div>
+
+        <!-- Informasi Sistem -->
+        <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
+            <h2 class="text-xl font-semibold mb-4">Informasi Sistem</h2>
+            <p class="text-lg mb-2">🌡️ Suhu: <span id="temperature">25°C</span></p>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div id="temp-bar" class="h-4 bg-red-500 rounded-full" style="width: 25%;"></div>
+            </div>
+            <p class="text-lg mb-2">💧 Kelembapan: <span id="humidity">60%</span></p>
+            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                <div id="humidity-bar" class="h-4 bg-blue-500 rounded-full" style="width: 60%;"></div>
+            </div>
+            <p class="text-lg mb-2">🔋 Baterai: <span id="battery-status">80%</span></p>
+            <div class="w-full bg-gray-200 rounded-full h-4">
+                <div id="battery-bar" class="h-4 bg-green-500 rounded-full" style="width: 80%;"></div>
+            </div>
+        </div>
+
+        <!-- Peralatan Elektronik -->
+        <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
+            <h2 class="text-xl font-semibold mb-4">Peralatan Elektronik</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">📺
+                    Televisi</button>
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">💦
+                    Air</button>
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">🌀
+                    Kipas</button>
+                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">🌬️
+                    Blower</button>
+            </div>
+        </div>
+
+        <!-- Emergency Stop -->
+        <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-300 transition-colors duration-300">
+            <h3 class="text-xl font-semibold mb-2 text-red-600">⚠ Emergency Stop</h3>
+            <button id="emergencyStopBtn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg">
+                🚨 Matikan Semua
+            </button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-gray-600">&copy; 2025 Smart Home</footer>
+
+    <!-- Navbar bawah -->
+    <nav
+        class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2 md:hidden dark:bg-gray-900 dark:border-gray-700">
+        <a href="cctv.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>📹</span>
+            <span class="text-xs">CCTV</span>
+        </a>
+        <a href="plts.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>☀️</span>
+            <span class="text-xs">PLTS</span>
+        </a>
+        <a href="security.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>🔒</span>
+            <span class="text-xs">Security</span>
+        </a>
+        <a href="control.html" class="flex flex-col items-center text-blue-600 dark:text-blue-400 font-semibold">
+            <span>🛠️</span>
+            <span class="text-xs">Control</span>
+        </a>
+        <a href="setting.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>⚙️</span>
+            <span class="text-xs">Setting</span>
+        </a>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

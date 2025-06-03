@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Panel Surya</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .floating-button {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 50;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 50;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gray-100 transition-colors duration-300">
+
+    <!-- Navbar Desktop -->
+    <nav class="desktop-nav bg-white shadow-md dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-gray-800 dark:text-white">Smart Solar</span>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="index.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Beranda</a>
+                    <a href="panelsurya.html"
+                        class="bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium">Panel Surya</a>
+                    <a href="keamanan.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Keamanan</a>
+                    <a href="kontrol.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Kontrol</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Konten -->
+    <div class="p-4 pb-20 md:pb-6 flex flex-col items-center">
+        <h1 class="text-3xl font-bold mt-6 mb-4 dark:text-white">Monitoring Panel Surya</h1>
+        <p class="text-lg mb-6 text-gray-700 dark:text-gray-300">Data ditampilkan secara real-time (dummy)</p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+
+            <!-- Baterai -->
+            <div class="bg-white p-4 rounded-lg shadow-lg dark:bg-gray-800 transition-colors duration-300">
+                <h2 class="text-xl font-semibold mb-2 dark:text-white">🔋 Kapasitas Baterai</h2>
+                <p class="text-lg dark:text-gray-300">Status: <span id="batteryPercent">80%</span></p>
+                <div class="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-4 mt-2">
+                    <div id="batteryBar" class="h-4 bg-green-500 rounded-full" style="width: 80%;"></div>
+                </div>
+            </div>
+
+            <!-- Tegangan Masuk -->
+            <div class="bg-white p-4 rounded-lg shadow-lg dark:bg-gray-800 transition-colors duration-300">
+                <h2 class="text-xl font-semibold mb-2 dark:text-white">☀️ Tegangan Masuk Panel Surya</h2>
+                <p class="text-lg dark:text-gray-300">Voltase: <span id="inputVoltage">18.5V</span></p>
+                <p class="text-lg dark:text-gray-300">Arus: <span id="inputCurrent">2.3A</span></p>
+            </div>
+
+            <!-- Tegangan Digunakan -->
+            <div class="bg-white p-4 rounded-lg shadow-lg dark:bg-gray-800 transition-colors duration-300">
+                <h2 class="text-xl font-semibold mb-2 dark:text-white">⚡ Tegangan yang Digunakan</h2>
+                <p class="text-lg dark:text-gray-300">Voltase: <span id="outputVoltage">12.2V</span></p>
+                <p class="text-lg dark:text-gray-300">Arus: <span id="outputCurrent">1.7A</span></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tombol Night Mode -->
+    <button class="floating-button px-4 py-2 bg-blue-600 text-white rounded-lg" onclick="toggleNightMode()">🌙 Night
+        Mode</button>
+
+    <!-- Mobile Navbar -->
+    <div class="mobile-nav shadow-lg dark:bg-gray-900 dark:border-gray-700">
+        <a href="cctv.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>📹 </span>
+            <span class="text-xs">CCTV</span>
+        </a>
+        <a href="plts.html" class="flex flex-col items-center text-blue-600 dark:text-blue-400 font-semibold">
+            <span>☀️</span>
+            <span class="text-xs">PLTS</span>
+        </a>
+        <a href="security.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>🔒</span>
+            <span class="text-xs">Security</span>
+        </a>
+        <a href="control.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>🛠️</span>
+            <span class="text-xs">Controller</span>
+        </a>
+        <a href="setting.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+            <span>⚙️</span>
+            <span class="text-xs">Setting</span>
+        </a>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-10 text-center text-gray-600 dark:text-gray-400">&copy; 2025 Smart Solar System</footer>
+
+    <!-- Script -->
+    <script>
+        let battery = 80;
+        let inputV = 18.5, inputA = 2.3;
+        let outputV = 12.2, outputA = 1.7;
+
+        function updateDummyData() {
+            battery = Math.max(0, Math.min(100, battery + (Math.random() - 0.5) * 2));
+            inputV = 18 + Math.random();
+            inputA = 2 + Math.random();
+            outputV = 12 + Math.random();
+            outputA = 1 + Math.random();
+
+            document.getElementById("batteryPercent").innerText = battery.toFixed(1) + "%";
+            document.getElementById("batteryBar").style.width = battery.toFixed(1) + "%";
+            document.getElementById("inputVoltage").innerText = inputV.toFixed(2) + "V";
+            document.getElementById("inputCurrent").innerText = inputA.toFixed(2) + "A";
+            document.getElementById("outputVoltage").innerText = outputV.toFixed(2) + "V";
+            document.getElementById("outputCurrent").innerText = outputA.toFixed(2) + "A";
+        }
+
+        function toggleNightMode() {
+            document.body.classList.toggle("bg-gray-900");
+            document.body.classList.toggle("text-white");
+
+            const cards = document.querySelectorAll("div.bg-white, nav.bg-white");
+            cards.forEach(card => {
+                card.classList.toggle("bg-white");
+                card.classList.toggle("bg-gray-800");
+            });
+
+            const darkTexts = document.querySelectorAll(".text-gray-700");
+            darkTexts.forEach(el => {
+                el.classList.toggle("text-gray-700");
+                el.classList.toggle("text-gray-200");
+            });
+        }
+
+        setInterval(updateDummyData, 2000);
+    </script>
+</body>
+
+</html>

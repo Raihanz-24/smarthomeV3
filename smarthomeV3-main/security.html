@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Security Monitoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="min-h-screen bg-gray-100 p-4 flex flex-col items-center transition-colors duration-300">
+
+    <h1 class="text-3xl font-bold mb-6 mt-4">Security Sensor Monitoring</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl w-full">
+
+        <!-- Card Pintu Depan -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <h2 class="text-xl font-semibold mb-2">Sensor Pintu Depan</h2>
+            <p class="mb-3 text-gray-700">Status: <span class="font-bold text-green-600">Tertutup</span></p>
+
+            <label class="flex items-center space-x-3 mb-2 cursor-pointer">
+                <input type="radio" name="mode-pintu-depan" value="notification" checked
+                    class="form-radio text-blue-600" />
+                <span>Notifikasi saja</span>
+            </label>
+
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="radio" name="mode-pintu-depan" value="alarm" class="form-radio text-red-600" />
+                <span>Alarm</span>
+            </label>
+        </div>
+
+        <!-- Card Pintu Belakang -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <h2 class="text-xl font-semibold mb-2">Sensor Pintu Belakang</h2>
+            <p class="mb-3 text-gray-700">Status: <span class="font-bold text-red-600">Terbuka</span></p>
+
+            <label class="flex items-center space-x-3 mb-2 cursor-pointer">
+                <input type="radio" name="mode-pintu-belakang" value="notification" class="form-radio text-blue-600" />
+                <span>Notifikasi saja</span>
+            </label>
+
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="radio" name="mode-pintu-belakang" value="alarm" checked class="form-radio text-red-600" />
+                <span>Alarm</span>
+            </label>
+        </div>
+
+        <!-- Card Jendela Kamar -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <h2 class="text-xl font-semibold mb-2">Sensor Jendela Kamar</h2>
+            <p class="mb-3 text-gray-700">Status: <span class="font-bold text-green-600">Tertutup</span></p>
+
+            <label class="flex items-center space-x-3 mb-2 cursor-pointer">
+                <input type="radio" name="mode-jendela-kamar" value="notification" checked
+                    class="form-radio text-blue-600" />
+                <span>Notifikasi saja</span>
+            </label>
+
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="radio" name="mode-jendela-kamar" value="alarm" class="form-radio text-red-600" />
+                <span>Alarm</span>
+            </label>
+        </div>
+
+        <!-- Card Jendela Ruang Tamu -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <h2 class="text-xl font-semibold mb-2">Sensor Jendela Ruang Tamu</h2>
+            <p class="mb-3 text-gray-700">Status: <span class="font-bold text-red-600">Terbuka</span></p>
+
+            <label class="flex items-center space-x-3 mb-2 cursor-pointer">
+                <input type="radio" name="mode-jendela-ruang" value="notification" class="form-radio text-blue-600" />
+                <span>Notifikasi saja</span>
+            </label>
+
+            <label class="flex items-center space-x-3 cursor-pointer">
+                <input type="radio" name="mode-jendela-ruang" value="alarm" checked class="form-radio text-red-600" />
+                <span>Alarm</span>
+            </label>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-gray-600 mb-20">&copy; 2025 Smart Home</footer>
+
+    <!-- Navbar bawah -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2 md:hidden">
+        <div class="mobile-nav shadow-lg dark:bg-gray-900 dark:border-gray-700 w-full flex justify-around">
+            <a href="cctv.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>📹</span>
+                <span class="text-xs">CCTV</span>
+            </a>
+            <a href="plts.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>☀️</span>
+                <span class="text-xs">PLTS</span>
+            </a>
+            <a href="security.html" class="flex flex-col items-center text-blue-600 dark:text-blue-400 font-semibold">
+                <span>🔒</span>
+                <span class="text-xs">Security</span>
+            </a>
+            <a href="control.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>🛠️</span>
+                <span class="text-xs">Controller</span>
+            </a>
+            <a href="setting.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>⚙️</span>
+                <span class="text-xs">Setting</span>
+            </a>
+        </div>
+    </nav>
+
+</body>
+
+</html>

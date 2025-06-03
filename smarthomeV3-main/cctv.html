@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CCTV Smart Home</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+
+<body class="min-h-screen bg-gray-100 p-4 flex flex-col items-center transition-colors duration-300">
+
+    <h1 class="text-3xl font-bold mb-6 mt-4">CCTV Monitoring</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
+
+        <!-- Card 1 -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <img src="https://via.placeholder.com/400x225?text=Terra+House+CCTV" alt="CCTV Teras Rumah"
+                class="rounded-md mb-4 object-cover w-full h-48" />
+            <h2 class="text-xl font-semibold mb-2">CCTV Teras Rumah</h2>
+            <p class="text-gray-600 mb-2">AI Detection: <span class="text-green-600 font-semibold">Aktif</span></p>
+            <p class="text-gray-600 mb-2">Resolusi: 1080p Full HD</p>
+            <p class="text-gray-600 mb-4">Monitoring area teras dengan deteksi gerakan cerdas berbasis ESP32 AI.</p>
+            <button
+                class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">Lihat
+                Live</button>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <img src="https://via.placeholder.com/400x225?text=Garasi+CCTV" alt="CCTV Garasi"
+                class="rounded-md mb-4 object-cover w-full h-48" />
+            <h2 class="text-xl font-semibold mb-2">CCTV Garasi</h2>
+            <p class="text-gray-600 mb-2">AI Detection: <span class="text-red-500 font-semibold">Tidak Aktif</span></p>
+            <p class="text-gray-600 mb-2">Resolusi: 720p HD</p>
+            <p class="text-gray-600 mb-4">CCTV di garasi dengan fitur perekaman dasar dan pemantauan manual.</p>
+            <button
+                class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">Lihat
+                Live</button>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+            <img src="https://via.placeholder.com/400x225?text=Halaman+Belakang+CCTV" alt="CCTV Halaman Belakang"
+                class="rounded-md mb-4 object-cover w-full h-48" />
+            <h2 class="text-xl font-semibold mb-2">CCTV Halaman Belakang</h2>
+            <p class="text-gray-600 mb-2">AI Detection: <span class="text-green-600 font-semibold">Aktif</span></p>
+            <p class="text-gray-600 mb-2">Resolusi: 4K Ultra HD</p>
+            <p class="text-gray-600 mb-4">Memantau halaman belakang dengan analisa video berbasis ESP32 AI.</p>
+            <button
+                class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">Lihat
+                Live</button>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-8 text-center text-gray-600 mb-20">&copy; 2025 Smart Home</footer>
+
+    <!-- Navbar bawah -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t shadow-md flex justify-around py-2 md:hidden">
+        <div class="mobile-nav shadow-lg dark:bg-gray-900 dark:border-gray-700 w-full flex justify-around">
+            <a href="cctv.html" class="flex flex-col items-center text-blue-600 dark:text-blue-400 font-semibold">
+                <span>📹</span>
+                <span class="text-xs">CCTV</span>
+            </a>
+            <a href="plts.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>☀️</span>
+                <span class="text-xs">PLTS</span>
+            </a>
+            <a href="security.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>🔒</span>
+                <span class="text-xs">Security</span>
+            </a>
+            <a href="control.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>🛠️</span>
+                <span class="text-xs">Controller</span>
+            </a>
+            <a href="setting.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
+                <span>⚙️</span>
+                <span class="text-xs">Setting</span>
+            </a>
+        </div>
+    </nav>
+
+</body>
+
+</html>
