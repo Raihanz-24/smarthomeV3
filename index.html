@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Smart Home Controller</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <style>
         .floating-button {
             position: fixed;
@@ -98,9 +98,8 @@
         <!-- Emergency Stop -->
         <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-300 transition-colors duration-300">
             <h3 class="text-xl font-semibold mb-2 text-red-600">⚠ Emergency Stop</h3>
-            <button id="emergencyStopBtn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg">
-                🚨 Matikan Semua
-            </button>
+            <button id="emergencyStopBtn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg">🚨 Matikan
+                Semua</button>
         </div>
     </div>
 
@@ -134,34 +133,37 @@
 
     <!-- Firebase SDK dan Script -->
     <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyCkdU7j55PWqYH5za7FftbJv4uFEpznjg4",
             authDomain: "smarthomev-3.firebaseapp.com",
+            databaseURL: "https://smarthomev-3-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "smarthomev-3",
-            storageBucket: "smarthomev-3.firebasestorage.app",
+            storageBucket: "smarthomev-3.appspot.com",
             messagingSenderId: "375801588908",
             appId: "1:375801588908:web:329cf3be86eafc77234309",
             measurementId: "G-3R2RBQHG95"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const database = getDatabase(app);
+        const analytics = getAnalytics(app);
 
         window.toggleRelay = function (el, deviceType) {
-            const name = el.getAttribute('data-device'); // pakai atribut data-device
+            const name = el.getAttribute('data-device');
             const isActive = el.classList.contains("bg-green-500");
 
             if (isActive) {
                 el.classList.remove("bg-green-500");
                 el.classList.add("bg-gray-500");
-                set(ref(db, `devices/${deviceType}/${name}`), "OFF");
+                set(ref(database, `devices/${deviceType}/${name}`), "OFF");
             } else {
                 el.classList.remove("bg-gray-500");
                 el.classList.add("bg-green-500");
-                set(ref(db, `devices/${deviceType}/${name}`), "ON");
+                set(ref(database, `devices/${deviceType}/${name}`), "ON");
             }
         };
 
@@ -172,19 +174,21 @@
                 btn.classList.add("bg-gray-500");
 
                 const name = btn.getAttribute('data-device');
-                const deviceType = btn.getAttribute("onclick").includes("lampu") ? "lampu" : "peralatan";
-                set(ref(db, `devices/${deviceType}/${name}`), "OFF");
+                // Cek deviceType dari tombol: ambil dari fungsi onclick atau data attribute
+                let deviceType = 'peralatan'; // default
+                if (btn.getAttribute("onclick").includes("'lampu'")) {
+                    deviceType = "lampu";
+                }
+                set(ref(database, `devices/${deviceType}/${name}`), "OFF");
             });
             alert("Semua perangkat dimatikan.");
         });
 
-        // Fungsi toggle mode malam (night mode)
         window.toggleNightMode = function () {
             document.body.classList.toggle('bg-gray-900');
             document.body.classList.toggle('text-white');
         };
 
-        // Update waktu dan tanggal
         function updateTime() {
             const now = new Date();
             document.getElementById("time").textContent = now.toLocaleTimeString();
@@ -193,6 +197,7 @@
         setInterval(updateTime, 1000);
         updateTime();
     </script>
+
 </body>
 
 </html>
