@@ -14,10 +14,6 @@
             z-index: 50;
         }
 
-        .active-tab {
-            @apply text-blue-600 font-bold;
-        }
-
         .nav-tab {
             transition: transform 0.2s ease;
         }
@@ -56,18 +52,18 @@
         <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
             <h2 class="text-xl font-semibold mb-4">Lampu</h2>
             <div class="grid grid-cols-2 gap-4">
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
-                    1</button>
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
-                    2</button>
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
-                    3</button>
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'lampu')">💡 Lampu
-                    4</button>
+                <button data-device="lampu1" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 1</button>
+                <button data-device="lampu2" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 2</button>
+                <button data-device="lampu3" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 3</button>
+                <button data-device="lampu4" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 4</button>
             </div>
         </div>
 
-        <!-- Informasi Sistem -->
+        <!-- Informasi Sistem (Statik) -->
         <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
             <h2 class="text-xl font-semibold mb-4">Informasi Sistem</h2>
             <p class="text-lg mb-2">🌡️ Suhu: <span id="temperature">25°C</span></p>
@@ -88,14 +84,14 @@
         <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
             <h2 class="text-xl font-semibold mb-4">Peralatan Elektronik</h2>
             <div class="grid grid-cols-2 gap-4">
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">📺
-                    Televisi</button>
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">💦
-                    Air</button>
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">🌀
-                    Kipas</button>
-                <button class="p-4 rounded-lg text-white bg-gray-500" onclick="toggleRelay(this, 'peralatan')">🌬️
-                    Blower</button>
+                <button data-device="televisi" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'peralatan')">📺 Televisi</button>
+                <button data-device="air" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'peralatan')">💦 Air</button>
+                <button data-device="kipas" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'peralatan')">🌀 Kipas</button>
+                <button data-device="blower" class="p-4 rounded-lg text-white bg-gray-500"
+                    onclick="toggleRelay(this, 'peralatan')">🌬️ Blower</button>
             </div>
         </div>
 
@@ -136,7 +132,67 @@
         </a>
     </nav>
 
-    <script src="script.js"></script>
+    <!-- Firebase SDK dan Script -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkdU7j55PWqYH5za7FftbJv4uFEpznjg4",
+            authDomain: "smarthomev-3.firebaseapp.com",
+            projectId: "smarthomev-3",
+            storageBucket: "smarthomev-3.firebasestorage.app",
+            messagingSenderId: "375801588908",
+            appId: "1:375801588908:web:329cf3be86eafc77234309",
+            measurementId: "G-3R2RBQHG95"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        window.toggleRelay = function (el, deviceType) {
+            const name = el.getAttribute('data-device'); // pakai atribut data-device
+            const isActive = el.classList.contains("bg-green-500");
+
+            if (isActive) {
+                el.classList.remove("bg-green-500");
+                el.classList.add("bg-gray-500");
+                set(ref(db, `devices/${deviceType}/${name}`), "OFF");
+            } else {
+                el.classList.remove("bg-gray-500");
+                el.classList.add("bg-green-500");
+                set(ref(db, `devices/${deviceType}/${name}`), "ON");
+            }
+        };
+
+        document.getElementById("emergencyStopBtn").addEventListener("click", () => {
+            const buttons = document.querySelectorAll("button[onclick^='toggleRelay']");
+            buttons.forEach(btn => {
+                btn.classList.remove("bg-green-500");
+                btn.classList.add("bg-gray-500");
+
+                const name = btn.getAttribute('data-device');
+                const deviceType = btn.getAttribute("onclick").includes("lampu") ? "lampu" : "peralatan";
+                set(ref(db, `devices/${deviceType}/${name}`), "OFF");
+            });
+            alert("Semua perangkat dimatikan.");
+        });
+
+        // Fungsi toggle mode malam (night mode)
+        window.toggleNightMode = function () {
+            document.body.classList.toggle('bg-gray-900');
+            document.body.classList.toggle('text-white');
+        };
+
+        // Update waktu dan tanggal
+        function updateTime() {
+            const now = new Date();
+            document.getElementById("time").textContent = now.toLocaleTimeString();
+            document.getElementById("date").textContent = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
 </body>
 
 </html>
