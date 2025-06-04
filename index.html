@@ -32,7 +32,7 @@
     <h1 class="text-3xl font-bold mb-2 mt-4">Smart Home Controller</h1>
     <p class="text-lg mb-4">Created by Reyhan</p>
 
-    <!-- Informasi -->
+    <!-- Informasi Waktu dan Status -->
     <div class="flex gap-4 mb-4 flex-wrap justify-center">
         <div class="flex items-center gap-2 text-lg font-semibold">
             ⏰ <span id="time"></span>
@@ -45,7 +45,7 @@
         </div>
     </div>
 
-    <!-- Konten -->
+    <!-- Kontrol Perangkat -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
 
         <!-- Lampu -->
@@ -63,7 +63,7 @@
             </div>
         </div>
 
-        <!-- Informasi Sistem (Statik) -->
+        <!-- Informasi Sistem -->
         <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
             <h2 class="text-xl font-semibold mb-4">Informasi Sistem</h2>
             <p class="text-lg mb-2">🌡️ Suhu: <span id="temperature">25°C</span></p>
@@ -132,11 +132,13 @@
     </nav>
 
     <!-- Firebase SDK dan Script -->
+
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-analytics.js";
-        import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
+        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-database.js";
 
+        // Konfigurasi Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyCkdU7j55PWqYH5za7FftbJv4uFEpznjg4",
             authDomain: "smarthomev-3.firebaseapp.com",
@@ -148,10 +150,12 @@
             measurementId: "G-3R2RBQHG95"
         };
 
+        // Inisialisasi Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         const analytics = getAnalytics(app);
 
+        // Fungsi toggle relay (ON/OFF) untuk device tertentu
         window.toggleRelay = function (el, deviceType) {
             const name = el.getAttribute('data-device');
             const isActive = el.classList.contains("bg-green-500");
@@ -167,6 +171,7 @@
             }
         };
 
+        // Fungsi Emergency Stop untuk mematikan semua perangkat
         document.getElementById("emergencyStopBtn").addEventListener("click", () => {
             const buttons = document.querySelectorAll("button[onclick^='toggleRelay']");
             buttons.forEach(btn => {
@@ -174,7 +179,7 @@
                 btn.classList.add("bg-gray-500");
 
                 const name = btn.getAttribute('data-device');
-                // Cek deviceType dari tombol: ambil dari fungsi onclick atau data attribute
+                // Deteksi deviceType dari onclick attribute
                 let deviceType = 'peralatan'; // default
                 if (btn.getAttribute("onclick").includes("'lampu'")) {
                     deviceType = "lampu";
@@ -184,19 +189,71 @@
             alert("Semua perangkat dimatikan.");
         });
 
+        // Fungsi toggle Night Mode (dark/light theme)
         window.toggleNightMode = function () {
             document.body.classList.toggle('bg-gray-900');
             document.body.classList.toggle('text-white');
         };
 
+        // Update waktu dan tanggal realtime di UI
         function updateTime() {
             const now = new Date();
             document.getElementById("time").textContent = now.toLocaleTimeString();
-            document.getElementById("date").textContent = now.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            document.getElementById("date").textContent = now.toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
         }
         setInterval(updateTime, 1000);
         updateTime();
+
+        // --- BAGIAN BARU: Load status dari Firebase dan update tombol saat halaman load ---
+        function loadStatusFromFirebase() {
+            const dbRef = ref(database, 'devices');
+
+            get(dbRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const devices = snapshot.val();
+
+                    // Untuk setiap deviceType (misal: lampu, peralatan)
+                    for (const deviceType in devices) {
+                        const deviceList = devices[deviceType];
+
+                        // Untuk setiap device dalam deviceType
+                        for (const deviceName in deviceList) {
+                            const status = deviceList[deviceName]; // ON atau OFF
+
+                            // Cari tombol sesuai data-device dan deviceType
+                            const btn = [...document.querySelectorAll(`button[data-device="${deviceName}"]`)]
+                                .find(b => b.getAttribute('onclick')?.includes(`'${deviceType}'`));
+
+                            if (btn) {
+                                if (status === "ON") {
+                                    btn.classList.add("bg-green-500");
+                                    btn.classList.remove("bg-gray-500");
+                                } else {
+                                    btn.classList.remove("bg-green-500");
+                                    btn.classList.add("bg-gray-500");
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    console.log("No device status data found in Firebase");
+                }
+            }).catch((error) => {
+                console.error("Error fetching device status:", error);
+            });
+        }
+
+        // Panggil saat halaman selesai load
+        window.addEventListener("load", () => {
+            loadStatusFromFirebase();
+        });
     </script>
+
 
 </body>
 
