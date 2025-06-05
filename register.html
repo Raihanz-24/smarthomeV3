@@ -2,52 +2,75 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Register - SmartHome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
-    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-100 to-white min-h-screen flex items-center justify-center">
+<body
+    class="bg-gradient-to-tr from-indigo-100 via-white to-blue-50 min-h-screen flex flex-col items-center justify-center px-4">
 
-    <div id="formContainer"
-        class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md opacity-0 transform scale-95 transition-all duration-500">
-        <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">SmartHome</h2>
-        <p class="text-center text-sm mb-6 text-gray-500">Created by Reyhan</p>
+    <!-- Carousel -->
+    <div class="w-full max-w-md mb-6 text-center">
+        <div id="featureCarousel"
+            class="text-lg font-semibold text-blue-800 animate-fadeIn transition-opacity duration-700">
+            🧠 Sistem SmartHome cerdas & praktis
+        </div>
+    </div>
+
+    <!-- Register Card -->
+    <div id="registerCard"
+        class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md opacity-0 transform scale-95 transition-all duration-700">
+        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-2">SmartHome</h2>
+        <p class="text-sm text-center text-gray-500 mb-6">Created by Reyhan</p>
 
         <form id="registerForm" class="space-y-4">
             <div>
                 <label for="username" class="block font-medium">Username</label>
                 <input type="text" id="username" class="w-full border px-3 py-2 rounded" />
-                <p class="text-red-600 text-sm mt-1 hidden" id="errorUsername"></p>
+                <p id="errorUsername" class="text-red-600 text-sm hidden mt-1"></p>
             </div>
 
             <div>
                 <label for="password" class="block font-medium">Password</label>
                 <input type="password" id="password" class="w-full border px-3 py-2 rounded" />
-                <p class="text-red-600 text-sm mt-1 hidden" id="errorPassword"></p>
+                <p id="errorPassword" class="text-red-600 text-sm hidden mt-1"></p>
             </div>
 
             <div>
                 <label for="token" class="block font-medium">Token Pendaftaran</label>
                 <input type="text" id="token" class="w-full border px-3 py-2 rounded" />
-                <p class="text-red-600 text-sm mt-1 hidden" id="errorToken"></p>
+                <p id="errorToken" class="text-red-600 text-sm hidden mt-1"></p>
             </div>
 
             <button type="submit"
-                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Daftar</button>
+                class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">Daftar</button>
         </form>
 
         <p class="text-center text-sm mt-4 text-gray-600">Sudah punya akun? <a href="index.html"
-                class="text-blue-600 hover:underline">Login di sini</a></p>
+                class="text-indigo-600 hover:underline">Login di sini</a></p>
     </div>
 
     <script>
-        // Firebase config
+        // Firebase Config
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
             authDomain: "YOUR_PROJECT.firebaseapp.com",
@@ -60,15 +83,34 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Token hash yang disimpan di Firebase
-        const TOKEN_HASH_STORED = "999cf26f6bfa67d07335e4448a01b8e812e028ef8b8dfd0e2dc13c170d9935c2";
-
-        // Animasi fade-in saat load
+        // Show card with animation
         window.onload = () => {
-            const container = document.getElementById("formContainer");
-            container.classList.remove("opacity-0", "scale-95");
-            container.classList.add("opacity-100", "scale-100");
+            document.getElementById("registerCard").classList.remove("opacity-0", "scale-95");
+            document.getElementById("registerCard").classList.add("opacity-100", "scale-100");
         };
+
+        // Carousel fitur
+        const fiturList = [
+            "🧠 Sistem SmartHome cerdas & praktis",
+            "💡 Kontrol perangkat dari mana saja",
+            "🔐 Keamanan berbasis ID perangkat",
+            "📲 Terhubung dengan Telegram Bot"
+        ];
+        let fiturIndex = 0;
+        setInterval(() => {
+            fiturIndex = (fiturIndex + 1) % fiturList.length;
+            const carousel = document.getElementById("featureCarousel");
+            carousel.classList.add("opacity-0");
+            setTimeout(() => {
+                carousel.textContent = fiturList[fiturIndex];
+                carousel.classList.remove("opacity-0");
+                carousel.classList.add("opacity-100");
+            }, 300);
+        }, 3500);
+
+        // Token Pendaftaran
+        const originalToken = "Sm4rth0meX!2025#"; // contoh token kuat
+        const hashedToken = CryptoJS.SHA256(originalToken).toString(); // simpan ini di database secara manual
 
         // FingerprintJS
         let visitorId = "";
@@ -78,10 +120,9 @@
             });
         });
 
+        // Submit Register
         document.getElementById("registerForm").addEventListener("submit", async function (e) {
             e.preventDefault();
-
-            // Ambil data
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             const token = document.getElementById("token").value.trim();
@@ -92,42 +133,20 @@
                 document.getElementById(id).classList.add("hidden");
             });
 
-            // Validasi kosong
-            if (!username) {
-                showError("errorUsername", "Username tidak boleh kosong");
-                return;
-            }
-            if (!password) {
-                showError("errorPassword", "Password tidak boleh kosong");
-                return;
-            }
-            if (!token) {
-                showError("errorToken", "Token wajib diisi");
-                return;
-            }
+            if (!username) return showError("errorUsername", "Username wajib diisi");
+            if (!password) return showError("errorPassword", "Password wajib diisi");
+            if (!token) return showError("errorToken", "Token wajib diisi");
 
-            // Hash token & cocokan
-            const hashedToken = CryptoJS.SHA256(token).toString();
-            if (hashedToken !== TOKEN_HASH_STORED) {
-                showError("errorToken", "Token salah");
-                return;
-            }
-
-            // Cek apakah username sudah dipakai
             const snapshot = await db.ref("users/" + username).once("value");
-            if (snapshot.exists()) {
-                showError("errorUsername", "Username sudah digunakan");
-                return;
-            }
+            if (snapshot.exists()) return showError("errorUsername", "Username sudah digunakan");
 
-            // Hash password
+            const hashedInputToken = CryptoJS.SHA256(token).toString();
+            if (hashedInputToken !== hashedToken) return showError("errorToken", "Token salah");
+
             const hashedPassword = CryptoJS.SHA256(password).toString();
-
-            // Simpan ke database
             await db.ref("users/" + username).set({
                 password: hashedPassword,
-                deviceId: visitorId,
-                createdAt: new Date().toISOString()
+                deviceId: visitorId
             });
 
             alert("Pendaftaran berhasil! Silakan login.");
