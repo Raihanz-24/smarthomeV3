@@ -21,19 +21,37 @@
                 <div>
                     <label class="block mb-1 font-medium" for="ssid">SSID</label>
                     <input type="text" id="ssid" name="ssid" placeholder="Masukkan SSID WiFi"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
+                        class="w-full border border-gray-300 rounded px-3 py-2" autocomplete="off" />
                 </div>
                 <div>
                     <label class="block mb-1 font-medium" for="password">Password</label>
                     <input type="password" id="password" name="password" placeholder="Masukkan password WiFi"
-                        class="w-full border border-gray-300 rounded px-3 py-2" />
+                        class="w-full border border-gray-300 rounded px-3 py-2" autocomplete="off" />
                 </div>
+                <div class="flex items-center space-x-2">
+                    <input type="checkbox" id="hiddenWifi" name="hiddenWifi" value="true" />
+                    <label for="hiddenWifi" class="font-medium">WiFi Hidden</label>
+                </div>
+                <div id="errorMsg" class="text-red-600 font-medium text-sm hidden"></div>
+
                 <button type="submit"
                     class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">Simpan</button>
+
             </form>
-            <p id="wifiStatus" class="mt-3 text-gray-600 italic">Status koneksi: <span
-                    class="font-semibold text-yellow-600">Belum terhubung</span></p>
+
+            <div class="flex items-center justify-between mt-4">
+                <p id="wifiStatus" class="text-gray-600 italic">
+                    Status koneksi: <span id="statusKoneksi" class="font-semibold text-yellow-600">Belum dicek</span>
+                </p>
+                <button id="cekStatusBtn"
+                    class="text-sm bg-gray-200 hover:bg-gray-300 px-3 py-1 rounded text-gray-700 transition">
+                    🔄 Cek Status
+                </button>
+            </div>
         </section>
+
+
+
 
         <!-- Notification Settings -->
         <section class="bg-white p-6 rounded-lg shadow">
@@ -153,6 +171,92 @@
             </a>
         </div>
     </nav>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
+
+    <script>
+        // Firebase Configuration (ganti dengan punyamu)
+        const firebaseConfig = {
+            apiKey: "AIzaSyCkdU7j55PWqYH5za7FftbJv4uFEpznjg4",
+            authDomain: "smarthomev-3.firebaseapp.com",
+            databaseURL: "https://smarthomev-3-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "smarthomev-3",
+            storageBucket: "smarthomev-3.appspot.com",
+            messagingSenderId: "375801588908",
+            appId: "1:375801588908:web:329cf3be86eafc77234309",
+            measurementId: "G-3R2RBQHG95"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const wifiRef = firebase.database().ref("wifiConfig");
+
+        // Status awal
+        document.getElementById("statusKoneksi").textContent = "Belum dicek";
+
+        // Fungsi untuk update SSID, password, hidden, dan status (hanya saat cek status)
+        function updateStatusDanConfig() {
+            wifiRef.once("value").then(snapshot => {
+                const data = snapshot.val();
+                if (data) {
+                    document.getElementById("ssid").value = data.ssid || "";
+                    document.getElementById("password").value = data.password || "";
+                    document.getElementById("hiddenWifi").checked = data.hiddenWifi === true;
+                    document.getElementById("statusKoneksi").textContent = data.status || "Tidak diketahui";
+                } else {
+                    document.getElementById("ssid").value = "";
+                    document.getElementById("password").value = "";
+                    document.getElementById("hiddenWifi").checked = false;
+                    document.getElementById("statusKoneksi").textContent = "Tidak ada data";
+                }
+            }).catch(() => {
+                document.getElementById("statusKoneksi").textContent = "Gagal mengambil data";
+            });
+        }
+
+        // Tombol cek status
+        document.getElementById("cekStatusBtn").addEventListener("click", () => {
+            updateStatusDanConfig();
+        });
+
+        // Simpan konfigurasi saat form disubmit
+        document.getElementById("wifiForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const ssid = document.getElementById("ssid").value.trim();
+            const password = document.getElementById("password").value;
+            const hiddenWifi = document.getElementById("hiddenWifi").checked;
+            const errorMsg = document.getElementById("errorMsg");
+
+            // Reset pesan error
+            errorMsg.classList.add("hidden");
+            errorMsg.textContent = "";
+
+            // Validasi
+            if (!ssid || !password) {
+                errorMsg.textContent = "SSID dan Password tidak boleh kosong.";
+                errorMsg.classList.remove("hidden");
+                return;
+            }
+
+            wifiRef.set({
+                ssid: ssid,
+                password: password,
+                hiddenWifi: hiddenWifi,
+                status: "Menghubungkan..."
+            }).then(() => {
+                document.getElementById("statusKoneksi").textContent = "Menghubungkan...";
+                errorMsg.classList.add("hidden");
+            }).catch((error) => {
+                console.error("Gagal simpan konfigurasi:", error);
+                errorMsg.textContent = "Terjadi kesalahan saat menyimpan konfigurasi.";
+                errorMsg.classList.remove("hidden");
+            });
+        });
+
+    </script>
 
 </body>
 
