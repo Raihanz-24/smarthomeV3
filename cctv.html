@@ -31,54 +31,120 @@
             // Kalau tidak valid, sudah di-redirect
         });
     </script>
+
+    <style>
+        .floating-button {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 50;
+        }
+
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 50;
+        }
+
+        @media (min-width: 768px) {
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
+        }
+    </style>
+
 </head>
 
-<body class="min-h-screen bg-gray-100 p-4 flex flex-col items-center transition-colors duration-300">
+<body class="min-h-screen bg-gray-100 transition-colors duration-300">
 
-    <h1 class="text-3xl font-bold mb-6 mt-4">CCTV Monitoring</h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl w-full">
+    <!-- Navbar Desktop -->
+    <nav class="desktop-nav bg-white shadow-md dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-gray-800 dark:text-white">SmartHome-V3</span>
+                </div>
+                <div class="flex space-x-4">
 
-        <!-- Card 1 -->
-        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
-            <img src="https://via.placeholder.com/400x225?text=Terra+House+CCTV" alt="CCTV Teras Rumah"
-                class="rounded-md mb-4 object-cover w-full h-48" />
-            <h2 class="text-xl font-semibold mb-2">CCTV Teras Rumah</h2>
-            <p class="text-gray-600 mb-2">AI Detection: <span class="text-green-600 font-semibold">Aktif</span></p>
-            <p class="text-gray-600 mb-2">Resolusi: 1080p Full HD</p>
-            <p class="text-gray-600 mb-4">Monitoring area teras dengan deteksi gerakan cerdas berbasis ESP32 AI.</p>
-            <button
-                class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">Lihat
-                Live</button>
+                    <a href="controller.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Controller</a>
+
+                    <a href="plts.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Panel
+                        Surya</a>
+                    <a href="security.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Security</a>
+                    <a href="cctv.html" class="bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium">CCTV</a>
+                    <a href="setting.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Setting</a>
+                </div>
+            </div>
         </div>
+    </nav>
+    <div class="max-w-7xl mx-auto px-4">
+        <h1 class="text-3xl font-bold mb-6 mt-4 text-center">CCTV Monitoring</h1>
 
-        <!-- Card 2 -->
-        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
-            <img src="https://via.placeholder.com/400x225?text=Garasi+CCTV" alt="CCTV Garasi"
-                class="rounded-md mb-4 object-cover w-full h-48" />
-            <h2 class="text-xl font-semibold mb-2">CCTV Garasi</h2>
-            <p class="text-gray-600 mb-2">AI Detection: <span class="text-red-500 font-semibold">Tidak Aktif</span></p>
-            <p class="text-gray-600 mb-2">Resolusi: 720p HD</p>
-            <p class="text-gray-600 mb-4">CCTV di garasi dengan fitur perekaman dasar dan pemantauan manual.</p>
-            <button
-                class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">Lihat
-                Live</button>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Card CCTV Teras Rumah -->
+            <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+                <img src="https://via.placeholder.com/400x225?text=Terra+House+CCTV" alt="CCTV Teras Rumah"
+                    class="rounded-md mb-4 object-cover w-full h-48" />
+                <h2 class="text-xl font-semibold mb-2">CCTV Teras Rumah</h2>
+                <p class="text-gray-600 mb-2">AI Detection: <span class="text-green-600 font-semibold">Aktif</span></p>
+                <p class="text-gray-600 mb-2">Resolusi: <span class="font-medium">1080p Full HD</span></p>
+                <p class="text-gray-600 mb-4">Monitoring area teras dengan deteksi gerakan cerdas berbasis ESP32 AI.</p>
+                <button
+                    class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                    Lihat Live
+                </button>
+            </div>
+
+            <!-- Card CCTV Garasi -->
+            <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+                <img src="https://via.placeholder.com/400x225?text=Garasi+CCTV" alt="CCTV Garasi"
+                    class="rounded-md mb-4 object-cover w-full h-48" />
+                <h2 class="text-xl font-semibold mb-2">CCTV Garasi</h2>
+                <p class="text-gray-600 mb-2">AI Detection: <span class="text-red-500 font-semibold">Tidak Aktif</span>
+                </p>
+                <p class="text-gray-600 mb-2">Resolusi: <span class="font-medium">720p HD</span></p>
+                <p class="text-gray-600 mb-4">CCTV di garasi dengan fitur perekaman dasar dan pemantauan manual.</p>
+                <button
+                    class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                    Lihat Live
+                </button>
+            </div>
+
+            <!-- Card CCTV Halaman Belakang -->
+            <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
+                <img src="https://via.placeholder.com/400x225?text=Halaman+Belakang+CCTV" alt="CCTV Halaman Belakang"
+                    class="rounded-md mb-4 object-cover w-full h-48" />
+                <h2 class="text-xl font-semibold mb-2">CCTV Halaman Belakang</h2>
+                <p class="text-gray-600 mb-2">AI Detection: <span class="text-green-600 font-semibold">Aktif</span></p>
+                <p class="text-gray-600 mb-2">Resolusi: <span class="font-medium">4K Ultra HD</span></p>
+                <p class="text-gray-600 mb-4">Memantau halaman belakang dengan analisa video berbasis ESP32 AI.</p>
+                <button
+                    class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">
+                    Lihat Live
+                </button>
+            </div>
         </div>
-
-        <!-- Card 3 -->
-        <div class="bg-white rounded-lg shadow-lg p-4 flex flex-col">
-            <img src="https://via.placeholder.com/400x225?text=Halaman+Belakang+CCTV" alt="CCTV Halaman Belakang"
-                class="rounded-md mb-4 object-cover w-full h-48" />
-            <h2 class="text-xl font-semibold mb-2">CCTV Halaman Belakang</h2>
-            <p class="text-gray-600 mb-2">AI Detection: <span class="text-green-600 font-semibold">Aktif</span></p>
-            <p class="text-gray-600 mb-2">Resolusi: 4K Ultra HD</p>
-            <p class="text-gray-600 mb-4">Memantau halaman belakang dengan analisa video berbasis ESP32 AI.</p>
-            <button
-                class="mt-auto px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition">Lihat
-                Live</button>
-        </div>
-
     </div>
+
+
 
     <!-- Footer -->
     <footer class="mt-8 text-center text-gray-600 mb-20">&copy; 2025 Smart Home</footer>

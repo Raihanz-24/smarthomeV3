@@ -43,100 +43,150 @@
     <style>
         .floating-button {
             position: fixed;
-            bottom: 80px;
+            bottom: 100px;
             right: 20px;
             z-index: 50;
         }
 
-        .nav-tab {
-            transition: transform 0.2s ease;
+        .mobile-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-top: 1px solid #ccc;
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            z-index: 50;
         }
 
-        .nav-tab:active {
-            transform: scale(0.9);
+        @media (min-width: 768px) {
+            .mobile-nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .desktop-nav {
+                display: none;
+            }
         }
     </style>
 
 </head>
 
-<body class="min-h-screen bg-gray-100 p-4 flex flex-col items-center transition-colors duration-300">
 
-    <button class="floating-button px-4 py-2 bg-blue-600 text-white rounded-lg" onclick="toggleNightMode()">🌙 Night
-        Mode</button>
 
-    <h1 class="text-3xl font-bold mb-2 mt-4">Smart Home Controller</h1>
-    <p class="text-lg mb-4">Created by Reyhan</p>
 
-    <!-- Informasi Waktu dan Status -->
-    <div class="flex gap-4 mb-4 flex-wrap justify-center">
-        <div class="flex items-center gap-2 text-lg font-semibold">
-            ⏰ <span id="time"></span>
+<body class="min-h-screen bg-gray-100 transition-colors duration-300">
+
+    <!-- Navbar Desktop -->
+    <nav class="desktop-nav bg-white shadow-md dark:bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-xl font-bold text-gray-800 dark:text-white">SmartHome-V3</span>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="controller.html"
+                        class="bg-blue-600 text-white px-3 py-2 rounded-md text-sm font-medium">Controller</a>
+                    <a href="plts.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Panel
+                        Surya</a>
+                    <a href="security.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Security</a>
+                    <a href="cctv.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">CCTV</a>
+                    <a href="setting.html"
+                        class="text-gray-700 hover:text-blue-600 dark:text-gray-200 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium">Setting</a>
+
+                </div>
+            </div>
         </div>
-        <div class="flex items-center gap-2 text-lg font-semibold">
-            📅 <span id="date"></span>
-        </div>
-        <div class="flex items-center gap-2 text-lg font-semibold">
-            🔌 Status: <span class="text-green-500">Online</span>
+    </nav>
+
+    <div class="w-full px-4 md:px-8 max-w-screen-lg mx-auto text-center">
+        <h1 class="text-3xl font-bold mb-2 mt-4">Smart Home Controller</h1>
+        <p class="text-lg mb-4">Created by Reyhan</p>
+
+        <!-- Informasi Waktu dan Status -->
+        <div class="flex gap-4 mb-4 flex-wrap justify-center">
+            <div class="flex items-center gap-2 text-lg font-semibold">
+                ⏰ <span id="time"></span>
+            </div>
+            <div class="flex items-center gap-2 text-lg font-semibold">
+                📅 <span id="date"></span>
+            </div>
+            <div class="flex items-center gap-2 text-lg font-semibold">
+                🔌 Status: <span class="text-green-500">Online</span>
+            </div>
         </div>
     </div>
 
-    <!-- Kontrol Perangkat -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
 
-        <!-- Lampu -->
-        <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
-            <h2 class="text-xl font-semibold mb-4">Lampu</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <button data-device="lampu1" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 1</button>
-                <button data-device="lampu2" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 2</button>
-                <button data-device="lampu3" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 3</button>
-                <button data-device="lampu4" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'lampu')">💡 Lampu 4</button>
-            </div>
-        </div>
+    <!-- Kontainer Tengah Responsif -->
+    <div class="w-full px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+        <!-- Kontrol Perangkat -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
 
-        <!-- Informasi Sistem -->
-        <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
-            <h2 class="text-xl font-semibold mb-4">Informasi Sistem</h2>
-            <p class="text-lg mb-2">🌡️ Suhu: <span id="temperature">25°C</span></p>
-            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
-                <div id="temp-bar" class="h-4 bg-red-500 rounded-full" style="width: 25%;"></div>
+            <!-- Lampu -->
+            <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
+                <h2 class="text-xl font-semibold mb-4">Lampu</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button data-device="lampu1" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'lampu')">💡 Lampu 1</button>
+                    <button data-device="lampu2" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'lampu')">💡 Lampu 2</button>
+                    <button data-device="lampu3" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'lampu')">💡 Lampu 3</button>
+                    <button data-device="lampu4" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'lampu')">💡 Lampu 4</button>
+                </div>
             </div>
-            <p class="text-lg mb-2">💧 Kelembapan: <span id="humidity">60%</span></p>
-            <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
-                <div id="humidity-bar" class="h-4 bg-blue-500 rounded-full" style="width: 60%;"></div>
-            </div>
-            <p class="text-lg mb-2">🔋 Baterai: <span id="battery-status">80%</span></p>
-            <div class="w-full bg-gray-200 rounded-full h-4">
-                <div id="battery-bar" class="h-4 bg-green-500 rounded-full" style="width: 80%;"></div>
-            </div>
-        </div>
 
-        <!-- Peralatan Elektronik -->
-        <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
-            <h2 class="text-xl font-semibold mb-4">Peralatan Elektronik</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <button data-device="televisi" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'peralatan')">📺 Televisi</button>
-                <button data-device="air" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'peralatan')">💦 Air</button>
-                <button data-device="kipas" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'peralatan')">🌀 Kipas</button>
-                <button data-device="blower" class="p-4 rounded-lg text-white bg-gray-500"
-                    onclick="toggleRelay(this, 'peralatan')">🌬️ Blower</button>
+            <!-- Informasi Sistem -->
+            <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
+                <h2 class="text-xl font-semibold mb-4">Informasi Sistem</h2>
+                <p class="text-lg mb-2">🌡️ Suhu: <span id="temperature">25°C</span></p>
+                <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                    <div id="temp-bar" class="h-4 bg-red-500 rounded-full" style="width: 25%;"></div>
+                </div>
+                <p class="text-lg mb-2">💧 Kelembapan: <span id="humidity">60%</span></p>
+                <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+                    <div id="humidity-bar" class="h-4 bg-blue-500 rounded-full" style="width: 60%;"></div>
+                </div>
+                <p class="text-lg mb-2">🔋 Baterai: <span id="battery-status">80%</span></p>
+                <div class="w-full bg-gray-200 rounded-full h-4">
+                    <div id="battery-bar" class="h-4 bg-green-500 rounded-full" style="width: 80%;"></div>
+                </div>
             </div>
-        </div>
 
-        <!-- Emergency Stop -->
-        <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-300 transition-colors duration-300">
-            <h3 class="text-xl font-semibold mb-2 text-red-600">⚠ Emergency Stop</h3>
-            <button id="emergencyStopBtn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg">🚨 Matikan
-                Semua</button>
+            <!-- Peralatan Elektronik -->
+            <div class="bg-white p-4 rounded-lg shadow-lg transition-colors duration-300">
+                <h2 class="text-xl font-semibold mb-4">Peralatan Elektronik</h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <button data-device="televisi" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'peralatan')">📺 Televisi</button>
+                    <button data-device="air" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'peralatan')">💦 Air</button>
+                    <button data-device="kipas" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'peralatan')">🌀 Kipas</button>
+                    <button data-device="blower" class="p-4 rounded-lg text-white bg-gray-500"
+                        onclick="toggleRelay(this, 'peralatan')">🌬️ Blower</button>
+                </div>
+            </div>
+
+            <!-- Emergency Stop -->
+            <div class="bg-white p-4 rounded-lg shadow-lg border border-gray-300 transition-colors duration-300">
+                <h3 class="text-xl font-semibold mb-2 text-red-600">⚠ Emergency Stop</h3>
+                <button id="emergencyStopBtn" class="w-full px-4 py-2 bg-red-600 text-white rounded-lg">🚨 Matikan
+                    Semua</button>
+            </div>
+
         </div>
     </div>
+
 
     <!-- Footer -->
     <footer class="mt-8 text-center text-gray-600">&copy; 2025 Smart Home</footer>
