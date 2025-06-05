@@ -64,7 +64,17 @@
     </div>
 
     <script>
-        // Firebase config
+        // Fungsi generate token
+        function generateSecureToken(length = 64) {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let token = '';
+            for (let i = 0; i < length; i++) {
+                token += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return token;
+        }
+
+        // Firebase config (tidak berubah)
         const firebaseConfig = {
             apiKey: "AIzaSyCkdU7j55PWqYH5za7FftbJv4uFEpznjg4",
             authDomain: "smarthomev-3.firebaseapp.com",
@@ -78,13 +88,13 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Animasi loginCard
+        // Animasi loginCard (tidak berubah)
         window.onload = () => {
             document.getElementById("loginCard").classList.remove("opacity-0", "scale-95");
             document.getElementById("loginCard").classList.add("opacity-100", "scale-100");
         };
 
-        // Fitur carousel
+        // Carousel fitur (tidak berubah)
         const fiturList = [
             "🔒 Login aman dengan ID perangkat unik",
             "💡 Kontrol lampu dan peralatan rumah",
@@ -92,7 +102,6 @@
             "📱 Akses dari mana saja",
             "🔒 Rumah semakin aman dan nyaman",
             "🧠 Sistem cerdas, mudah digunakan"
-
         ];
         let fiturIndex = 0;
         setInterval(() => {
@@ -107,7 +116,7 @@
             }, 300);
         }, 3500);
 
-        // FingerprintJS
+        // FingerprintJS (tidak berubah)
         let visitorId = "";
         FingerprintJS.load().then(fp => {
             fp.get().then(result => {
@@ -115,7 +124,7 @@
             });
         });
 
-        // Simpan login jika berhasil
+        // Simpan login jika berhasil, tambahkan sessionToken
         document.getElementById("loginForm").addEventListener("submit", async function (e) {
             e.preventDefault();
 
@@ -155,9 +164,13 @@
                 return;
             }
 
+            // Buat session token random tiap login
+            const sessionToken = generateSecureToken();
+
             // Simpan ke localStorage
             localStorage.setItem("username", username);
-            localStorage.setItem("password", password); // Hanya untuk simulasi, sebaiknya jangan simpan plaintext
+            localStorage.setItem("password", password);
+            localStorage.setItem("sessionToken", sessionToken);
 
             // Redirect
             window.location.href = "controller.html";
@@ -169,6 +182,7 @@
             el.classList.remove("hidden");
         }
     </script>
+
 </body>
 
 </html>

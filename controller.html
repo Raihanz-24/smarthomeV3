@@ -2,24 +2,42 @@
 <html lang="id">
 
 <head>
+    <style>
+        /* Sembunyikan seluruh halaman sampai validasi selesai */
+        body {
+            visibility: hidden;
+        }
+    </style>
 
+    <script>
+        // Fungsi validasi session sederhana
+        function validateSession() {
+            const sessionToken = localStorage.getItem("sessionToken");
+            const username = localStorage.getItem("username");
+
+            // Cek ada token dan username (boleh tambah cek token valid di server kalau ada API)
+            if (!sessionToken || !username) {
+                // Tidak valid, redirect ke login
+                window.location.href = "login.html";
+                return false;
+            }
+
+            return true;
+        }
+
+        // Tunggu sampai DOM siap, lalu cek session dan tampilkan halaman kalau valid
+        document.addEventListener("DOMContentLoaded", () => {
+            if (validateSession()) {
+                document.body.style.visibility = "visible";
+            }
+            // Kalau tidak valid, sudah di-redirect
+        });
+    </script>
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Smart Home Controller</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-
-    <script>
-        const session = JSON.parse(localStorage.getItem('session'));
-        const FIVE_HOURS = 5 * 60 * 60 * 1000;
-
-        if (!session || !session.sessionToken || (Date.now() - session.loginTime > FIVE_HOURS)) {
-            localStorage.removeItem('session');
-            window.location.href = 'index.html'; // Redirect ke login
-        }
-
-        // Optional: Anda bisa juga cek ke Firebase kalau mau memverifikasi token ini lebih dalam
-    </script>
     >
 
     <style>
