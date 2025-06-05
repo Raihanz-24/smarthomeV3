@@ -2,87 +2,143 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
     <title>Register - SmartHome</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 
-<body class="bg-gradient-to-br from-green-400 to-blue-500 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-4">
-        <h1 class="text-3xl font-bold text-center text-green-600">SmartHome</h1>
-        <p class="text-center text-gray-500 text-sm">Created by Raihan</p>
+<body class="bg-gradient-to-br from-blue-100 to-white min-h-screen flex items-center justify-center">
+
+    <div id="formContainer"
+        class="bg-white p-8 rounded-lg shadow-lg w-full max-w-md opacity-0 transform scale-95 transition-all duration-500">
+        <h2 class="text-2xl font-bold text-center text-blue-700 mb-4">SmartHome</h2>
+        <p class="text-center text-sm mb-6 text-gray-500">Created by Reyhan</p>
 
         <form id="registerForm" class="space-y-4">
-            <input type="text" id="username" placeholder="Username" class="w-full border px-4 py-2 rounded-lg"
-                required />
-            <input type="password" id="password" placeholder="Password" class="w-full border px-4 py-2 rounded-lg"
-                required />
-            <input type="text" id="token" placeholder="Token Pendaftaran" class="w-full border px-4 py-2 rounded-lg"
-                required />
+            <div>
+                <label for="username" class="block font-medium">Username</label>
+                <input type="text" id="username" class="w-full border px-3 py-2 rounded" />
+                <p class="text-red-600 text-sm mt-1 hidden" id="errorUsername"></p>
+            </div>
+
+            <div>
+                <label for="password" class="block font-medium">Password</label>
+                <input type="password" id="password" class="w-full border px-3 py-2 rounded" />
+                <p class="text-red-600 text-sm mt-1 hidden" id="errorPassword"></p>
+            </div>
+
+            <div>
+                <label for="token" class="block font-medium">Token Pendaftaran</label>
+                <input type="text" id="token" class="w-full border px-3 py-2 rounded" />
+                <p class="text-red-600 text-sm mt-1 hidden" id="errorToken"></p>
+            </div>
+
             <button type="submit"
-                class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition">Register</button>
+                class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Daftar</button>
         </form>
 
-        <p id="message" class="text-sm text-center text-red-500 mt-2"></p>
-        <p class="text-sm text-center mt-4">Sudah punya akun? <a href="index.html"
-                class="text-green-600 hover:underline">Login di sini</a></p>
+        <p class="text-center text-sm mt-4 text-gray-600">Sudah punya akun? <a href="index.html"
+                class="text-blue-600 hover:underline">Login di sini</a></p>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
-
+    <script>
+        // Firebase config
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
             projectId: "YOUR_PROJECT_ID",
-            databaseURL: "YOUR_DATABASE_URL",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MSG_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Token hash yang disimpan di Firebase
+        const TOKEN_HASH_STORED = "999cf26f6bfa67d07335e4448a01b8e812e028ef8b8dfd0e2dc13c170d9935c2";
+
+        // Animasi fade-in saat load
+        window.onload = () => {
+            const container = document.getElementById("formContainer");
+            container.classList.remove("opacity-0", "scale-95");
+            container.classList.add("opacity-100", "scale-100");
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
-        const fixedToken = "rahasia123"; // ubah sesuai token Anda
+        // FingerprintJS
+        let visitorId = "";
+        FingerprintJS.load().then(fp => {
+            fp.get().then(result => {
+                visitorId = result.visitorId;
+            });
+        });
 
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        const visitorId = result.visitorId;
-
-        document.getElementById("registerForm").addEventListener("submit", async (e) => {
+        document.getElementById("registerForm").addEventListener("submit", async function (e) {
             e.preventDefault();
+
+            // Ambil data
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
             const token = document.getElementById("token").value.trim();
-            const message = document.getElementById("message");
 
-            if (token !== fixedToken) {
-                message.textContent = "Token salah.";
+            // Reset error
+            ["errorUsername", "errorPassword", "errorToken"].forEach(id => {
+                document.getElementById(id).textContent = "";
+                document.getElementById(id).classList.add("hidden");
+            });
+
+            // Validasi kosong
+            if (!username) {
+                showError("errorUsername", "Username tidak boleh kosong");
+                return;
+            }
+            if (!password) {
+                showError("errorPassword", "Password tidak boleh kosong");
+                return;
+            }
+            if (!token) {
+                showError("errorToken", "Token wajib diisi");
                 return;
             }
 
-            const hashedPassword = await hashPassword(password);
+            // Hash token & cocokan
+            const hashedToken = CryptoJS.SHA256(token).toString();
+            if (hashedToken !== TOKEN_HASH_STORED) {
+                showError("errorToken", "Token salah");
+                return;
+            }
 
-            await set(ref(db, "users/" + username), {
+            // Cek apakah username sudah dipakai
+            const snapshot = await db.ref("users/" + username).once("value");
+            if (snapshot.exists()) {
+                showError("errorUsername", "Username sudah digunakan");
+                return;
+            }
+
+            // Hash password
+            const hashedPassword = CryptoJS.SHA256(password).toString();
+
+            // Simpan ke database
+            await db.ref("users/" + username).set({
                 password: hashedPassword,
-                deviceId: visitorId
+                deviceId: visitorId,
+                createdAt: new Date().toISOString()
             });
 
-            message.classList.remove("text-red-500");
-            message.classList.add("text-green-600");
-            message.textContent = "Berhasil mendaftar. Silakan login.";
+            alert("Pendaftaran berhasil! Silakan login.");
+            window.location.href = "index.html";
         });
+
+        function showError(id, message) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.classList.remove("hidden");
+        }
     </script>
 </body>
 

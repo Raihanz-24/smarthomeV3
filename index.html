@@ -2,88 +2,169 @@
 <html lang="id">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
     <title>Login - SmartHome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://openfpcdn.io/fingerprintjs/v3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        @keyframes fadeInSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
 </head>
 
-<body class="bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center min-h-screen">
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md space-y-4">
-        <h1 class="text-3xl font-bold text-center text-blue-600">SmartHome</h1>
-        <p class="text-center text-gray-500 text-sm">Created by Raihan</p>
+<body
+    class="bg-gradient-to-tr from-indigo-100 via-white to-blue-50 min-h-screen flex flex-col items-center justify-center px-4">
 
-        <form id="loginForm" class="space-y-4">
-            <input type="text" id="username" placeholder="Username" class="w-full border px-4 py-2 rounded-lg"
-                required />
-            <input type="password" id="password" placeholder="Password" class="w-full border px-4 py-2 rounded-lg"
-                required />
-            <button type="submit"
-                class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition">Login</button>
-        </form>
-
-        <p id="loginMessage" class="text-sm text-center text-red-500"></p>
-        <p class="text-sm text-center mt-4">Belum punya akun? <a href="register.html"
-                class="text-blue-600 hover:underline">Daftar di sini</a></p>
+    <!-- Carousel Fitur -->
+    <div class="w-full max-w-md mb-6 text-center">
+        <div id="featureCarousel"
+            class="text-lg font-semibold text-blue-800 animate-fadeInSlide transition-opacity duration-700">
+            🔒 Login aman dengan ID perangkat unik
+        </div>
     </div>
 
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getDatabase, ref, child, get } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    <!-- Card Login -->
+    <div id="loginCard"
+        class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-md opacity-0 transform scale-95 transition-all duration-700">
+        <h2 class="text-2xl font-bold text-center text-indigo-700 mb-2">SmartHome</h2>
+        <p class="text-sm text-center text-gray-500 mb-6">Created by Reyhan</p>
 
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label for="username" class="block font-medium">Username</label>
+                <input type="text" id="username" class="w-full border px-3 py-2 rounded" />
+                <p class="text-red-600 text-sm mt-1 hidden" id="errorUsername"></p>
+            </div>
+
+            <div>
+                <label for="password" class="block font-medium">Password</label>
+                <input type="password" id="password" class="w-full border px-3 py-2 rounded" />
+                <p class="text-red-600 text-sm mt-1 hidden" id="errorPassword"></p>
+            </div>
+
+            <button type="submit"
+                class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">Login</button>
+        </form>
+
+        <p class="text-center text-sm mt-4 text-gray-600">Belum punya akun? <a href="register.html"
+                class="text-indigo-600 hover:underline">Daftar di sini</a></p>
+    </div>
+
+    <script>
+        // Firebase config
         const firebaseConfig = {
             apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            databaseURL: "https://YOUR_PROJECT.firebaseio.com",
             projectId: "YOUR_PROJECT_ID",
-            databaseURL: "YOUR_DATABASE_URL",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MSG_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "SENDER_ID",
+            appId: "APP_ID"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        // Animasi loginCard
+        window.onload = () => {
+            document.getElementById("loginCard").classList.remove("opacity-0", "scale-95");
+            document.getElementById("loginCard").classList.add("opacity-100", "scale-100");
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        // Fitur carousel
+        const fiturList = [
+            "🔒 Login aman dengan ID perangkat unik",
+            "💡 Kontrol lampu dan peralatan rumah",
+            "📊 Monitor status perangkat real-time",
+            "📱 Akses dari mana saja",
+            "🧠 Sistem cerdas, mudah digunakan"
+        ];
+        let fiturIndex = 0;
+        setInterval(() => {
+            fiturIndex = (fiturIndex + 1) % fiturList.length;
+            const carousel = document.getElementById("featureCarousel");
+            carousel.classList.remove("opacity-100");
+            carousel.classList.add("opacity-0");
+            setTimeout(() => {
+                carousel.textContent = fiturList[fiturIndex];
+                carousel.classList.remove("opacity-0");
+                carousel.classList.add("opacity-100");
+            }, 300);
+        }, 3500);
 
-        async function hashPassword(password) {
-            const encoder = new TextEncoder();
-            const data = encoder.encode(password);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-        }
+        // FingerprintJS
+        let visitorId = "";
+        FingerprintJS.load().then(fp => {
+            fp.get().then(result => {
+                visitorId = result.visitorId;
+            });
+        });
 
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        const visitorId = result.visitorId;
-
-        const savedUsername = localStorage.getItem('username');
-        const savedPassword = localStorage.getItem('password');
-        if (savedUsername) document.getElementById('username').value = savedUsername;
-        if (savedPassword) document.getElementById('password').value = savedPassword;
-
-        document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        // Simpan login jika berhasil
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
             e.preventDefault();
+
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
-            const hashedPassword = await hashPassword(password);
-            const loginMessage = document.getElementById("loginMessage");
 
-            const snapshot = await get(child(ref(db), "users/" + username));
-            if (!snapshot.exists()) {
-                loginMessage.textContent = "Username tidak ditemukan.";
+            // Reset error
+            ["errorUsername", "errorPassword"].forEach(id => {
+                document.getElementById(id).textContent = "";
+                document.getElementById(id).classList.add("hidden");
+            });
+
+            if (!username) {
+                showError("errorUsername", "Username tidak boleh kosong");
+                return;
+            }
+            if (!password) {
+                showError("errorPassword", "Password tidak boleh kosong");
                 return;
             }
 
-            const data = snapshot.val();
-            if (data.password === hashedPassword && data.deviceId === visitorId) {
-                localStorage.setItem("username", username);
-                localStorage.setItem("password", password);
-                window.location.href = "controller.html";
-            } else {
-                loginMessage.textContent = "Password salah atau perangkat tidak cocok.";
+            const snapshot = await db.ref("users/" + username).once("value");
+            if (!snapshot.exists()) {
+                showError("errorUsername", "Username tidak ditemukan");
+                return;
             }
+
+            const userData = snapshot.val();
+            const hashedPassword = CryptoJS.SHA256(password).toString();
+            if (hashedPassword !== userData.password) {
+                showError("errorPassword", "Password salah");
+                return;
+            }
+
+            if (userData.deviceId !== visitorId) {
+                showError("errorUsername", "Perangkat tidak dikenali");
+                return;
+            }
+
+            // Simpan ke localStorage
+            localStorage.setItem("username", username);
+            localStorage.setItem("password", password); // Hanya untuk simulasi, sebaiknya jangan simpan plaintext
+
+            // Redirect
+            window.location.href = "controller.html";
         });
+
+        function showError(id, message) {
+            const el = document.getElementById(id);
+            el.textContent = message;
+            el.classList.remove("hidden");
+        }
     </script>
 </body>
 
