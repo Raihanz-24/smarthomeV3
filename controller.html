@@ -1,18 +1,3 @@
-<script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
-<script>
-    (async () => {
-        const fp = await FingerprintJS.load();
-        const result = await fp.get();
-        const currentVisitorId = result.visitorId;
-
-        const smarthomeUser = JSON.parse(localStorage.getItem('smarthomeUser') || '{}');
-        if (!smarthomeUser.username || smarthomeUser.deviceId !== currentVisitorId) {
-            localStorage.removeItem('smarthomeUser');
-            window.location.href = 'index.html';
-        }
-    })();
-</script>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -23,6 +8,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Smart Home Controller</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+
+    <!-- Load fingerprint.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+
+    <!-- Proteksi akses sebelum konten tampil -->
+    <script>
+        document.documentElement.style.visibility = 'hidden';
+
+        (async () => {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            const currentVisitorId = result.visitorId;
+
+            const smarthomeUser = JSON.parse(localStorage.getItem('smarthomeUser') || '{}');
+
+            // Validasi login dan device
+            if (!smarthomeUser.username || smarthomeUser.deviceId !== currentVisitorId) {
+                localStorage.removeItem('smarthomeUser');
+                location.replace('index.html');
+            } else {
+                document.documentElement.style.visibility = 'visible';
+            }
+        })();
+    </script>
+
     <style>
         .floating-button {
             position: fixed;
