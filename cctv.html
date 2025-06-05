@@ -7,28 +7,29 @@
     <title>CCTV Smart Home</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
 
-    <!-- Load fingerprint.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
-
-    <!-- Proteksi akses sebelum konten tampil -->
     <script>
-        document.documentElement.style.visibility = 'hidden';
+        // Fungsi validasi session sederhana
+        function validateSession() {
+            const sessionToken = localStorage.getItem("sessionToken");
+            const username = localStorage.getItem("username");
 
-        (async () => {
-            const fp = await FingerprintJS.load();
-            const result = await fp.get();
-            const currentVisitorId = result.visitorId;
-
-            const smarthomeUser = JSON.parse(localStorage.getItem('smarthomeUser') || '{}');
-
-            // Validasi login dan device
-            if (!smarthomeUser.username || smarthomeUser.deviceId !== currentVisitorId) {
-                localStorage.removeItem('smarthomeUser');
-                location.replace('index.html');
-            } else {
-                document.documentElement.style.visibility = 'visible';
+            // Cek ada token dan username (boleh tambah cek token valid di server kalau ada API)
+            if (!sessionToken || !username) {
+                // Tidak valid, redirect ke login
+                window.location.href = "index.html";
+                return false;
             }
-        })();
+
+            return true;
+        }
+
+        // Tunggu sampai DOM siap, lalu cek session dan tampilkan halaman kalau valid
+        document.addEventListener("DOMContentLoaded", () => {
+            if (validateSession()) {
+                document.body.style.visibility = "visible";
+            }
+            // Kalau tidak valid, sudah di-redirect
+        });
     </script>
 </head>
 
