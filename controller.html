@@ -22,6 +22,22 @@
             transform: scale(0.9);
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3/dist/fp.min.js"></script>
+    <script>
+        (async () => {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+            const currentVisitorId = result.visitorId;
+
+            const smarthomeUser = JSON.parse(localStorage.getItem('smarthomeUser') || '{}');
+            if (!smarthomeUser.username || smarthomeUser.deviceId !== currentVisitorId) {
+                localStorage.removeItem('smarthomeUser');
+                window.location.href = 'index.html';
+            }
+        })();
+    </script>
+
 </head>
 
 <body class="min-h-screen bg-gray-100 p-4 flex flex-col items-center transition-colors duration-300">
@@ -123,7 +139,7 @@
         </a>
         <a href="controller.html" class="flex flex-col items-center text-blue-600 dark:text-blue-400 font-semibold">
             <span>🛠️</span>
-            <span class="text-xs">Control</span>
+            <span class="text-xs">Controller</span>
         </a>
         <a href="setting.html" class="flex flex-col items-center text-gray-700 dark:text-gray-200">
             <span>⚙️</span>
